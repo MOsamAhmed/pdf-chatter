@@ -5,7 +5,7 @@ import { INestApplication } from '@nestjs/common';
 export function SwaggerInitializer(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Base-BE-MongoDB')
-    .setDescription('Boilerplate of NestJs BE with typeorm using PostgresSQL')
+    .setDescription('Boilerplate of NestJs BE with MongoDB')
     .setVersion('1.0')
     .addSecurity(AUTHORIZATION_HEADER_KEY, {
       type: 'apiKey',
