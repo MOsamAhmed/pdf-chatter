@@ -3,6 +3,7 @@ import { UserModel } from '../modules/auth/entities/user.entity';
 
 export function MapToUserResponse(user: UserModel): UserResponse {
   let result = new UserResponse();
+  result._id = user._id;
   result.FullName = user.FullName;
   result.Email = user.Email;
   result.Type = user.Type;

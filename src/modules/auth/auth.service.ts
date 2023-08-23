@@ -12,26 +12,27 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserModel } from './entities/user.entity';
 import { CompareHash } from 'src/helpers/bcrypt.helper';
 import * as moment from 'moment-timezone';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserModel)
-    private _userModelRepository: Repository<UserModel>,
-    @InjectRepository(UserDeviceModel)
-    private _userDeviceModelRepository: Repository<UserDeviceModel>,
+    @InjectModel(UserModel.name) private _userModelRepository: Model<UserModel>,
+    @InjectModel(UserDeviceModel.name)
+    private _userDeviceModelRepository: Model<UserDeviceModel>,
   ) {}
 
   async LoginAsync(
     payload: LoginRequest,
-    userId?: number,
+    userId?: string,
     isFirstTimeLogin: boolean = false,
   ): Promise<LoginResponse> {
     let result = new LoginResponse();
     result.IsFirstTimeLogin = isFirstTimeLogin;
 
     if (!isFirstTimeLogin) {
-      let findUser = await this._userModelRepository.findOneBy({
+      let findUser = await this._userModelRepository.findOne({
         Email: payload.Email,
       });
       if (!findUser) throw new NotFoundException('User Not Found');
@@ -43,7 +44,7 @@ export class AuthService {
       if (!isPasswordMatched)
         throw new BadRequestException('Invalid Credentials');
 
-      userId = findUser.Id;
+      userId = findUser._id;
     }
 
     result.AuthToken = await this.GenAuthToken(userId);
@@ -51,18 +52,18 @@ export class AuthService {
     return result;
   }
 
-  async GenAuthToken(userId: number): Promise<string> {
+  async GenAuthToken(userId: string): Promise<string> {
     let newUserDevice = new UserDeviceModel();
     newUserDevice.UserId = userId;
     newUserDevice.AuthTokenExpiry = moment().add(7, 'd').toDate();
     newUserDevice.AuthToken = uuidv4();
-    newUserDevice = await this._userDeviceModelRepository.save(newUserDevice);
 
+    newUserDevice = await this._userDeviceModelRepository.create(newUserDevice);
     return newUserDevice.AuthToken;
   }
 
   async GetSession(token: string): Promise<AuthDto> {
-    let findUserDevice = await this._userDeviceModelRepository.findOneBy({
+    let findUserDevice = await this._userDeviceModelRepository.findOne({
       AuthToken: token,
     });
     let curDate = new Date();
@@ -71,11 +72,11 @@ export class AuthService {
       return null;
     }
 
-    let findUser = await this._userModelRepository.findOneBy({
-      Id: findUserDevice.UserId,
-    });
+    let findUser = await this._userModelRepository.findById(
+      findUserDevice.UserId,
+    );
 
-    let result = new AuthDto(findUser.Id, findUser);
+    let result = new AuthDto(findUser._id, findUser);
     return result;
   }
 }

@@ -1,7 +1,9 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { BaseModel } from '../../../models/base.entity';
+import { BaseModel, BaseSchema } from '../../../models/base.entity';
 import { Exclude } from 'class-transformer';
 import { UserDeviceModel } from './user-device.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export enum UserModelTypeEnum {
   Admin = 'Admin',
@@ -9,63 +11,37 @@ export enum UserModelTypeEnum {
   Guest = 'Guest',
 }
 
-@Entity('user')
+export type UserModelDocument = HydratedDocument<UserModel>;
+
+@Schema()
 export class UserModel extends BaseModel {
-  @Column({
-    name: 'full_name',
-    nullable: false,
-  })
+  @Prop()
   FullName: string;
 
-  @Column({
-    name: 'email',
-    nullable: false,
-  })
+  @Prop()
   Email: string;
 
-  @Column({
-    name: 'password',
-    nullable: false,
-  })
+  @Prop()
   @Exclude()
   Password: string;
 
-  @Column({
-    name: 'user_model_type',
-    type: 'enum',
-    enum: UserModelTypeEnum,
-    default: UserModelTypeEnum.User,
-    nullable: false,
-  })
+  @Prop()
   Type: UserModelTypeEnum;
 
-  @Column({
-    name: 'is_active',
-    default: true,
-    nullable: false,
-  })
+  @Prop()
   IsActive: boolean;
 
-  @Column({
-    name: 'last_active',
-    type: 'timestamptz',
-    nullable: true,
-  })
-  LastActive: Date;
+  @Prop()
+  LastActive?: Date;
 
-  @Column({
-    name: 'email_verification_otp',
-    nullable: true,
-  })
-  EmailVerificationOTP: string;
+  @Prop()
+  EmailVerificationOTP?: string;
 
-  @Column({
-    name: 'email_verification_otp_expiry',
-    type: 'timestamptz',
-    nullable: true,
-  })
-  EmailVerificationOTPExpiry: Date;
+  @Prop()
+  EmailVerificationOTPExpiry?: Date;
 
-  @OneToMany(() => UserDeviceModel, (userDevice) => userDevice.User)
+  @Prop({ type: [Types.ObjectId], ref: UserDeviceModel.name })
   UserDevices: UserDeviceModel[];
 }
+
+export const UserModelSchema = SchemaFactory.createForClass(UserModel);

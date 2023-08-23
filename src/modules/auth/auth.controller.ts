@@ -16,6 +16,19 @@ export class AuthController {
     private readonly _userService: UserService,
   ) {}
 
+  @Post('add-test')
+  async AddTest(@Body() payload) {
+    return await this._userService.AddTest(payload);
+  }
+
+  @Post('get-test')
+  async GetTest() {
+    return await this._userService.GetTest();
+  }
+  //   |
+  //   |
+  //   |
+
   @Post('login')
   async LoginAsync(@Body() payload: LoginRequest): Promise<LoginResponse> {
     return await this._authService.LoginAsync(payload);

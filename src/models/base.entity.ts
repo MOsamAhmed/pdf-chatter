@@ -1,23 +1,28 @@
-import {
-  BaseEntity,
-  CreateDateColumn,
-  DeleteDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Prop } from '@nestjs/mongoose';
+import { Schema, Types } from 'mongoose';
 
-export abstract class BaseModel extends BaseEntity {
-  @PrimaryGeneratedColumn({
-    name: 'id',
-  })
-  Id: number;
+export abstract class BaseModel {
+  // @Prop({ auto: true, default: Types.ObjectId() })
+  _id: string;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  // below date properties not in use right now
+  @Prop()
   public CreatedAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  @Prop()
   public UpdatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', default: null })
+  @Prop()
   public DeletedAt: Date;
 }
+
+// not in use right now
+export const BaseSchema = new Schema({
+  _id: String, //or number, or (increment) function,
+
+  CreatedAt: Date,
+
+  UpdatedAt: Date,
+
+  DeletedAt: Date,
+});

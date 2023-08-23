@@ -3,6 +3,7 @@ dotenv.config();
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerInitializer } from './helpers/swagger';
+import { AppEnv } from './helpers/env.helper';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,7 +11,9 @@ async function bootstrap() {
   // Custom Code
   SwaggerInitializer(app);
 
-  await app.listen(3000);
+  const appPort = AppEnv('APP_PORT', 3000);
+  console.log('appPort', appPort);
+  await app.listen(appPort);
 }
 bootstrap();
 

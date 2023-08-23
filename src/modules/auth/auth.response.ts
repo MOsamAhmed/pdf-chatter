@@ -11,6 +11,9 @@ export class LoginResponse {
 
 export class UserResponse {
   @ApiResponseProperty()
+  _id: string;
+
+  @ApiResponseProperty()
   FullName: string;
 
   @ApiResponseProperty()
@@ -27,10 +30,10 @@ export class UserResponse {
 }
 
 export class AuthDto {
-  public UserId: number;
+  public UserId: string;
   public User: UserModel;
 
-  constructor(userId: number, user?: UserModel) {
+  constructor(userId: string, user?: UserModel) {
     this.UserId = userId;
     if (user) {
       this.User = user;
