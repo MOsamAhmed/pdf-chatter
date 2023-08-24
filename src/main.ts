@@ -9,6 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Custom Code
+  app.enableCors();
   SwaggerInitializer(app);
 
   const appPort = AppEnv('APP_PORT', 3000);
