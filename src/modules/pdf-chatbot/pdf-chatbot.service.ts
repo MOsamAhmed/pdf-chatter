@@ -45,40 +45,62 @@ export class PdfChatbotService {
   }
 
   async ExtractContent(payload: ExtractContentRequest, user: UserModel) {
-    try {
-      const form = new FormData();
-      form.append('text', payload.file);
-      form.append('user_id', user._id);
+    // let newUser = new UserModel();
+    // newUser.FullName = payload.FullName;
+    // newUser.Email = payload.Email;
+    // newUser.Password = await HashKey(payload.Password);
 
-      const response = await axios.post(
-        `${this.PDF_CHATBOT_URI}/extract-content`,
-        form,
-        {
-          headers: {},
-        },
-      );
+    // let createdUser = new this._userModelRepository(newUser);
+    // createdUser = await createdUser.save();
+    // return createdUser._id;
 
-      // Check the status code and handle different response types
-      if (response.status >= 200 && response.status < 300) {
-        return response.data; // Return successful response data
-      } else {
-        throw new HttpException(response.data, response.status);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        throw new HttpException(
-          axiosError.response?.data || 'Internal Server Error',
-          axiosError.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    let newTextData = new TextDataModel();
+    newTextData.content = payload.file;
+    newTextData.user_id = user._id;
+
+    let createdTextData = new this._textDataModelRepository(newTextData);
+    createdTextData = await createdTextData.save();
+
+    return {
+      currentDocumentId: createdTextData._id,
+    };
   }
+
+  // async ExtractContent(payload: ExtractContentRequest, user: UserModel) {
+  //   try {
+  //     const form = new FormData();
+  //     form.append('text', payload.file);
+  //     form.append('user_id', user._id);
+
+  //     const response = await axios.post(
+  //       `${this.PDF_CHATBOT_URI}/extract-content`,
+  //       form,
+  //       {
+  //         headers: {},
+  //       },
+  //     );
+
+  //     // Check the status code and handle different response types
+  //     if (response.status >= 200 && response.status < 300) {
+  //       return response.data; // Return successful response data
+  //     } else {
+  //       throw new HttpException(response.data, response.status);
+  //     }
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       const axiosError = error as AxiosError;
+  //       throw new HttpException(
+  //         axiosError.response?.data || 'Internal Server Error',
+  //         axiosError.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //       );
+  //     } else {
+  //       throw new HttpException(
+  //         'Internal Server Error',
+  //         HttpStatus.INTERNAL_SERVER_ERROR,
+  //       );
+  //     }
+  //   }
+  // }
 
   async AskQuestion(payload: AskQuestionRequest) {
     let axiosHeaders = {};
