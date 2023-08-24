@@ -6,7 +6,9 @@ import {
   ExtractContentRequest,
   GenerateDocumentInfoRequest,
 } from './pdf-chatbot.request';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('pdf-chatbot')
 @Controller('pdf-chatbot')
 export class PdfChatbotController {
   constructor(private readonly _pdfChatbotService: PdfChatbotService) {}

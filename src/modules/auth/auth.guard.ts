@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     const request = context.switchToHttp().getRequest();
     const requiredAuthorization = this._reflector.get<string[]>(
       AUTHORIZATION_HEADER_KEY,

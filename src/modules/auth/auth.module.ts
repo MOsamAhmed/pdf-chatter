@@ -18,5 +18,6 @@ import {
   ],
   controllers: [AuthController],
   providers: [AuthService, UserService],
+  exports: [AuthService, UserService],
 })
 export class AuthModule {}

@@ -8,7 +8,12 @@ import {
   UpdateUserRequest,
 } from './auth.request';
 import { LoginResponse, UserResponse } from './auth.response';
+import { ApiTags } from '@nestjs/swagger';
+import { Authorized } from 'src/decorators/authorize.decorator';
+import { UserModel } from './entities/user.entity';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -42,9 +47,10 @@ export class AuthController {
     return await this._authService.LoginAsync(payload, newUserId, true);
   }
 
+  @Authorized()
   @Get('me')
-  async GetUserAsync(): Promise<UserResponse> {
-    return await this._userService.GetUserAsync(null);
+  async GetUserAsync(@CurrentUser() user: UserModel): Promise<UserResponse> {
+    return await this._userService.GetUserAsync(user);
   }
 
   @Patch('update-user')
