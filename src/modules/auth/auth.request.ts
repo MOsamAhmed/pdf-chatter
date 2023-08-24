@@ -30,15 +30,15 @@ export class RegisterRequest {
   @MinLength(8)
   Password: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Length(0, 1000)
-  DeviceUUID: string;
+  // @ApiPropertyOptional()
+  // @IsOptional()
+  // @Length(0, 1000)
+  // DeviceUUID: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Length(0, 1000)
-  FCMToken: string;
+  // @ApiPropertyOptional()
+  // @IsOptional()
+  // @Length(0, 1000)
+  // FCMToken: string;
 }
 
 export class UpdateUserRequest {
