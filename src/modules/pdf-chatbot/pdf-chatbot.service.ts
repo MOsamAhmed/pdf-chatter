@@ -7,22 +7,24 @@ import {
 } from './pdf-chatbot.request';
 import { AxiosApiCallerService } from '../axios-api-caller/axios-api-caller.service';
 import { AppEnv } from 'src/helpers/env.helper';
+import { UserModel } from '../auth/entities/user.entity';
 
 @Injectable()
 export class PdfChatbotService {
   readonly PDF_CHATBOT_URI: string;
-  readonly PDF_CHATBOT_SECRET_KEY: string;
+  // readonly PDF_CHATBOT_SECRET_KEY: string;
 
   constructor(private _axiosApiCallerService: AxiosApiCallerService) {
     this.PDF_CHATBOT_URI = AppEnv('PDF_CHATBOT_URI', '');
-    this.PDF_CHATBOT_SECRET_KEY = AppEnv('PDF_CHATBOT_SECRET_KEY', '');
+    // this.PDF_CHATBOT_SECRET_KEY = AppEnv('PDF_CHATBOT_SECRET_KEY', '');
   }
 
-  async ExtractContent(payload: ExtractContentRequest) {
+  async ExtractContent(payload: ExtractContentRequest, user: UserModel) {
     let axiosHeaders = {};
 
     let axiosPayload: any = {
       file: payload.file,
+      userId: user._id,
     };
 
     let response = await this._axiosApiCallerService.DoPostApiCallAsync(

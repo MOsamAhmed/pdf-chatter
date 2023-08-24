@@ -8,6 +8,8 @@ import {
 } from './pdf-chatbot.request';
 import { ApiTags } from '@nestjs/swagger';
 import { Authorized } from 'src/decorators/authorize.decorator';
+import { UserModel } from '../auth/entities/user.entity';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @ApiTags('pdf-chatbot')
 @Controller('pdf-chatbot')
@@ -16,8 +18,11 @@ export class PdfChatbotController {
 
   @Authorized()
   @Post('extract-content')
-  async ExtractContent(@Body() payload: ExtractContentRequest) {
-    return await this._pdfChatbotService.ExtractContent(payload);
+  async ExtractContent(
+    @Body() payload: ExtractContentRequest,
+    @CurrentUser() user: UserModel,
+  ) {
+    return await this._pdfChatbotService.ExtractContent(payload, user);
   }
 
   @Authorized()
