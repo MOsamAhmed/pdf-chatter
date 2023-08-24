@@ -3,6 +3,7 @@ import { PdfChatbotService } from './pdf-chatbot.service';
 import {
   AskQuestionRequest,
   ChatHistoryRequest,
+  DocumentHistoryRequest,
   ExtractContentRequest,
   GenerateDocumentInfoRequest,
 } from './pdf-chatbot.request';
@@ -15,6 +16,15 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 @Controller('pdf-chatbot')
 export class PdfChatbotController {
   constructor(private readonly _pdfChatbotService: PdfChatbotService) {}
+
+  @Authorized()
+  @Post('document-history')
+  async DocumentHistory(
+    @Body() payload: DocumentHistoryRequest,
+    @CurrentUser() user: UserModel,
+  ) {
+    return await this._pdfChatbotService.DocumentHistory(payload, user);
+  }
 
   @Authorized()
   @Post('extract-content')

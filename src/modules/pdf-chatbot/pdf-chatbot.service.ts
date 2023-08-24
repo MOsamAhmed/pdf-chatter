@@ -2,21 +2,45 @@ import { Injectable } from '@nestjs/common';
 import {
   AskQuestionRequest,
   ChatHistoryRequest,
+  DocumentHistoryRequest,
   ExtractContentRequest,
   GenerateDocumentInfoRequest,
 } from './pdf-chatbot.request';
 import { AxiosApiCallerService } from '../axios-api-caller/axios-api-caller.service';
 import { AppEnv } from 'src/helpers/env.helper';
 import { UserModel } from '../auth/entities/user.entity';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { TextDataModel } from './entities/text-data.entity';
 
 @Injectable()
 export class PdfChatbotService {
   readonly PDF_CHATBOT_URI: string;
   // readonly PDF_CHATBOT_SECRET_KEY: string;
 
-  constructor(private _axiosApiCallerService: AxiosApiCallerService) {
+  constructor(
+    @InjectModel(TextDataModel.name)
+    private _textDataModelRepository: Model<TextDataModel>,
+
+    private _axiosApiCallerService: AxiosApiCallerService,
+  ) {
     this.PDF_CHATBOT_URI = AppEnv('PDF_CHATBOT_URI', '');
     // this.PDF_CHATBOT_SECRET_KEY = AppEnv('PDF_CHATBOT_SECRET_KEY', '');
+  }
+
+  async DocumentHistory(payload: DocumentHistoryRequest, user: UserModel) {
+    const page = payload.page || 1;
+    const size = payload.size || 1000;
+    const skip = (page - 1) * size;
+
+    let documentHistory = await this._textDataModelRepository
+      .find({
+        user_id: user._id,
+      })
+      .skip(skip)
+      .limit(payload.size);
+
+    return documentHistory;
   }
 
   async ExtractContent(payload: ExtractContentRequest, user: UserModel) {

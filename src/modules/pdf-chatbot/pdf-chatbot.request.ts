@@ -1,5 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+export class DocumentHistoryRequest {
+  @ApiProperty()
+  @IsInt()
+  @IsOptional()
+  page: number = 1;
+
+  @ApiProperty()
+  @IsInt()
+  @IsOptional()
+  size: number = 1000;
+}
 
 export class ExtractContentRequest {
   @ApiProperty()
