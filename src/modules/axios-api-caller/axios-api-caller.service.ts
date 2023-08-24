@@ -33,12 +33,6 @@ export class AxiosApiCallerService {
         );
       }
     }
-
-    let response: AxiosResponse<any, any> = await axios.post(url, payload, {
-      headers,
-    });
-
-    return response;
   }
 
   async DoGetApiCallAsync(

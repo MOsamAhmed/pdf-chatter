@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   AskQuestionRequest,
   ChatHistoryRequest,
@@ -12,6 +12,7 @@ import { UserModel } from '../auth/entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { TextDataModel } from './entities/text-data.entity';
+import axios, { AxiosError } from 'axios';
 
 @Injectable()
 export class PdfChatbotService {
@@ -44,19 +45,39 @@ export class PdfChatbotService {
   }
 
   async ExtractContent(payload: ExtractContentRequest, user: UserModel) {
-    let axiosHeaders = {};
+    try {
+      const form = new FormData();
+      form.append('text', payload.file);
+      form.append('user_id', user._id);
 
-    let axiosPayload: any = {
-      text: payload.file,
-      user_id: user._id,
-    };
+      const response = await axios.post(
+        `${this.PDF_CHATBOT_URI}/extract-content`,
+        form,
+        {
+          headers: {},
+        },
+      );
 
-    let response = await this._axiosApiCallerService.DoPostApiCallAsync(
-      `${this.PDF_CHATBOT_URI}/extract-content`,
-      axiosPayload,
-      axiosHeaders,
-    );
-    return response;
+      // Check the status code and handle different response types
+      if (response.status >= 200 && response.status < 300) {
+        return response.data; // Return successful response data
+      } else {
+        throw new HttpException(response.data, response.status);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        throw new HttpException(
+          axiosError.response?.data || 'Internal Server Error',
+          axiosError.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw new HttpException(
+          'Internal Server Error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 
   async AskQuestion(payload: AskQuestionRequest) {
