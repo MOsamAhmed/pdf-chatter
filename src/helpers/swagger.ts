@@ -7,6 +7,7 @@ export function SwaggerInitializer(app: INestApplication) {
     .setTitle('Base-BE-MongoDB')
     .setDescription('Boilerplate of NestJs BE with MongoDB')
     .setVersion('1.0')
+    .setExternalDoc('Postman Collection', '/api-json')
     .addSecurity(AUTHORIZATION_HEADER_KEY, {
       type: 'apiKey',
       description: 'Api Authorization',
