@@ -31,5 +31,5 @@ export class ChatHistoryRequest {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  documentId: string;
 }
