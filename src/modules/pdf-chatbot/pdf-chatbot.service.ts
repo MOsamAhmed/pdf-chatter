@@ -37,7 +37,7 @@ export class PdfChatbotService {
     let axiosHeaders = {};
 
     let axiosPayload: any = {
-      _id: payload._id,
+      _id: payload.documentId,
       question: payload.question,
     };
 
@@ -53,7 +53,7 @@ export class PdfChatbotService {
     let axiosHeaders = {};
 
     let axiosPayload: any = {
-      _id: payload._id,
+      _id: payload.documentId,
     };
 
     let response = await this._axiosApiCallerService.DoPostApiCallAsync(
@@ -68,7 +68,7 @@ export class PdfChatbotService {
     let axiosHeaders = {};
 
     let axiosPayload: any = {
-      _id: payload._id,
+      _id: payload.userId,
     };
 
     let response = await this._axiosApiCallerService.DoPostApiCallAsync(

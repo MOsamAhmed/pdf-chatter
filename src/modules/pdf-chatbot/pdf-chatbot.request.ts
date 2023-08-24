@@ -12,7 +12,7 @@ export class AskQuestionRequest {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  _id: string;
+  documentId: string;
 
   @ApiProperty()
   @IsString()
@@ -24,12 +24,12 @@ export class GenerateDocumentInfoRequest {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  _id: string;
+  documentId: string;
 }
 
 export class ChatHistoryRequest {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  _id: string;
+  userId: string;
 }

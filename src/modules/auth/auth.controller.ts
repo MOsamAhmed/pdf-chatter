@@ -21,18 +21,15 @@ export class AuthController {
     private readonly _userService: UserService,
   ) {}
 
-  @Post('add-test')
-  async AddTest(@Body() payload) {
-    return await this._userService.AddTest(payload);
-  }
+  // @Post('add-test')
+  // async AddTest(@Body() payload) {
+  //   return await this._userService.AddTest(payload);
+  // }
 
-  @Post('get-test')
-  async GetTest() {
-    return await this._userService.GetTest();
-  }
-  //   |
-  //   |
-  //   |
+  // @Post('get-test')
+  // async GetTest() {
+  //   return await this._userService.GetTest();
+  // }
 
   @Post('login')
   async LoginAsync(@Body() payload: LoginRequest): Promise<LoginResponse> {
@@ -53,16 +50,20 @@ export class AuthController {
     return await this._userService.GetUserAsync(user);
   }
 
+  @Authorized()
   @Patch('update-user')
   async UpdateUserAsync(
     @Body() payload: UpdateUserRequest,
+    @CurrentUser() user: UserModel,
   ): Promise<UserResponse> {
-    return await this._userService.UpdateUserAsync(payload, null);
+    return await this._userService.UpdateUserAsync(payload, user);
   }
 
+  @Authorized()
   @Put('reset-password')
   async ResetPasswordAsync(
     @Body() payload: ResetPasswordRequest,
+    @CurrentUser() user: UserModel,
   ): Promise<boolean> {
     return await this._userService.ResetPasswordAsync(payload, null);
   }
