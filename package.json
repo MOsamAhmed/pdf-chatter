@@ -1,10 +1,13 @@
 {
-  "name": "base-be-mongodb",
+  "name": "pdf-chatter",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "18.13.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
