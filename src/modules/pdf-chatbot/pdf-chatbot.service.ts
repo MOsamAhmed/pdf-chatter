@@ -45,25 +45,21 @@ export class PdfChatbotService {
   }
 
   async ExtractContent(payload: ExtractContentRequest, user: UserModel) {
-    // let newUser = new UserModel();
-    // newUser.FullName = payload.FullName;
-    // newUser.Email = payload.Email;
-    // newUser.Password = await HashKey(payload.Password);
-
-    // let createdUser = new this._userModelRepository(newUser);
-    // createdUser = await createdUser.save();
-    // return createdUser._id;
-
-    let newTextData = new TextDataModel();
-    newTextData.content = payload.file;
-    newTextData.user_id = user._id;
-
-    let createdTextData = new this._textDataModelRepository(newTextData);
-    createdTextData = await createdTextData.save();
-
-    return {
-      currentDocumentId: createdTextData._id,
+    let axiosHeaders = {
+      'content-type': 'multipart/form-data',
     };
+
+    let axiosPayload: any = {
+      text: payload.file,
+      user_id: user._id,
+    };
+
+    let response = await this._axiosApiCallerService.DoPostApiCallAsync(
+      `${this.PDF_CHATBOT_URI}/extract-content`,
+      axiosPayload,
+      axiosHeaders,
+    );
+    return response;
   }
 
   async AskQuestion(payload: AskQuestionRequest) {
